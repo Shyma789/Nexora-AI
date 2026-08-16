@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexora — Student Opportunity Matcher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ========== LOGIN SCREEN ========== -->
+<section id="loginScreen" class="screen login-screen">
+  <div class="login-visual">
+    <div class="compass-mark" aria-hidden="true">
+      <svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="92" class="ring-a"/><circle cx="100" cy="100" r="70" class="ring-b"/><circle cx="100" cy="100" r="48" class="ring-c"/></svg>
+    </div>
+    <p class="eyebrow">01 · Every field. One compass.</p>
+    <h1>Nexora</h1>
+    <p class="login-tag">Scholarships, competitions, internships, freelance gigs, research, volunteering, fellowships, debates, lectures &amp; workshops — matched to your profile, not buried in a search bar.</p>
+    <ul class="login-stats">
+      <li><strong>15+</strong> live competitions across 7 categories</li>
+      <li><strong>13 sections</strong> — each with its own Q&amp;A and FAQ</li>
+      <li><strong>Auto-alerts</strong> before deadlines slip past you</li>
+    </ul>
+  </div>
+  <div class="login-form-wrap">
+    <form id="loginForm" class="login-form" autocomplete="off">
+      <p class="eyebrow">02 · Get matched</p>
+      <h2>Create your profile</h2>
+      <label>Name
+        <input type="text" id="fName" placeholder="e.g. Priya Ramesh" required>
+      </label>
+      <label>Email
+        <input type="email" id="fEmail" placeholder="you@college.edu" required>
+      </label>
+      <label>Password
+        <input type="password" id="fPass" placeholder="••••••••" required>
+      </label>
+      <label>Field of study
+        <select id="fField">
+          <option>Computer Science</option>
+          <option>Medical</option>
+          <option>Commerce / CA</option>
+          <option>Pure Science</option>
+          <option>Arts &amp; Design</option>
+          <option>Environment</option>
+        </select>
+      </label>
+      <button type="submit" class="btn-primary">Enter dashboard →</button>
+      <p class="login-fine">Prototype only — no data leaves your browser.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ========== APP SHELL ========== -->
+<section id="appScreen" class="screen app-shell hidden">
+
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">◎</span> Nexora</div>
+    <nav id="sideNav" class="side-nav">
+      <button data-view="dashboard" class="nav-item active"><span>🧭</span>Dashboard</button>
+      <button data-view="competitions" class="nav-item"><span>🏆</span>Competitions</button>
+      <button data-view="internships" class="nav-item"><span>💼</span>Internships</button>
+      <button data-view="freelance" class="nav-item"><span>🧑‍💻</span>Freelance</button>
+      <button data-view="scholarships" class="nav-item"><span>🎓</span>Scholarships</button>
+      <button data-view="research" class="nav-item"><span>🔬</span>Research</button>
+      <button data-view="volunteering" class="nav-item"><span>🤝</span>Volunteering</button>
+      <button data-view="fellowships" class="nav-item"><span>📜</span>Fellowships</button>
+      <button data-view="debateconf" class="nav-item"><span>🎙️</span>Debate &amp; Conferences</button>
+      <button data-view="lectures" class="nav-item"><span>🎧</span>Lectures</button>
+      <button data-view="workshops" class="nav-item"><span>🛠️</span>Workshops</button>
+      <button data-view="exams" class="nav-item"><span>📝</span>Certifications</button>
+      <button data-view="resources" class="nav-item"><span>📚</span>Resources</button>
+      <button data-view="profile" class="nav-item"><span>🥇</span>Profile &amp; Badges</button>
+    </nav>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button class="lang-btn active" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="ta">தமிழ்</button>
+      <button class="lang-btn" data-lang="tanglish">Tanglish</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input id="globalSearch" type="text" placeholder="Search opportunities, hosts, tags…">
+        <button id="voiceBtn" class="icon-btn" title="Voice search">🎙️</button>
+      </div>
+      <div class="topbar-actions">
+        <button id="chatToggle" class="icon-btn" title="Ask the assistant">🤖</button>
+        <button id="notifBtn" class="icon-btn" title="Deadline &amp; match alerts">🔔<span id="notifDot" class="dot"></span></button>
+        <div class="profile-chip">
+          <div class="avatar" id="avatarInitial">S</div>
+          <div><div id="topName" class="tn">Student</div><div id="topField" class="tf">Field</div></div>
+        </div>
+      </div>
+    </header>
+
+    <div id="notifPanel" class="notif-panel hidden"></div>
+
+    <div id="viewRoot" class="view-root"><!-- views injected here --></div>
+  </main>
+</section>
+
+<!-- ========== DETAIL MODAL ========== -->
+<div id="detailModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <button id="modalClose" class="modal-close">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ========== CHATBOT WIDGET ========== -->
+<div id="chatWidget" class="chat-widget hidden">
+  <div class="chat-head">Nexora Assistant <span class="chat-head-actions"><button id="voiceMuteBtn" class="icon-btn small" title="Toggle spoken replies">🔊</button><button id="chatClose" class="icon-btn small">✕</button></span></div>
+  <div id="chatLog" class="chat-log"></div>
+  <form id="chatForm" class="chat-form">
+    <input id="chatInput" type="text" placeholder="Ask about deadlines, filters, badges…">
+    <button type="submit">➤</button>
+  </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
